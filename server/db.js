@@ -17,7 +17,7 @@ export async function connectDB(connectionString) {
     }
     pool = new Pool({
       connectionString,
-      ssl: { rejectUnauthorized: false }
+      ssl: true
     });
     await pool.query('SET search_path TO public');
     return true;

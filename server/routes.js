@@ -1,19 +1,9 @@
 import express from 'express';
-import { getPool, connectDB, initDB } from './db.js';
+import { getPool } from './db.js';
 
 const router = express.Router();
 
-router.post('/db/connect', async (req, res) => {
-  const { connectionString } = req.body;
-  if (!connectionString) return res.status(400).json({ error: 'Connection string required' });
-  try {
-    await connectDB(connectionString);
-    await initDB();
-    res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ error: 'Kết nối thất bại: ' + err.message });
-  }
-});
+// Xoá router /db/connect để bảo mật - Point 4 trong audit report
 
 router.get('/db/status', (req, res) => {
   try { getPool(); res.json({ connected: true }); }
@@ -53,7 +43,7 @@ router.get('/categories', async (req, res) => {
 
 router.post('/orders', async (req, res) => {
   const { items, guest_name, guest_email, guest_phone, shipping_address, note, total } = req.body;
-  if (!items?.length) return res.status(400).json({ error: 'Giỏ hàng trống' });
+  if (!items || !items.length) return res.status(400).json({ error: 'Giỏ hàng trống' });
   if (!guest_name || !shipping_address) return res.status(400).json({ error: 'Thiếu thông tin giao hàng' });
   const pool = getPool();
   const client = await pool.connect();
