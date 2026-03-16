@@ -1,10 +1,7 @@
-import express from 'express';
-import cors from 'cors';
-import path from 'path';
 import { fileURLToPath } from 'url';
 import { readFileSync } from 'fs';
-import routes from './routes.js';
 import { connectDB, initDB } from './db.js';
+import app from './app.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -23,17 +20,7 @@ try {
   }
 } catch { }
 
-const app = express();
 const PORT = process.env.PORT || 3000;
-
-app.use(cors());
-app.use(express.json());
-app.use('/api', routes);
-
-app.use(express.static(path.join(__dirname, '../client/dist')));
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
 
 app.listen(PORT, async () => {
   console.log(`🚀 Server chạy tại http://localhost:${PORT}`);
