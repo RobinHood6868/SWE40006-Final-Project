@@ -1,5 +1,6 @@
 import { fileURLToPath } from 'url';
 import { readFileSync } from 'fs';
+import path from 'path';
 import { connectDB, initDB } from './db.js';
 import app from './app.js';
 

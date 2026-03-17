@@ -26,3 +26,7 @@ jobs:
     - name: Run Tests
       # We use our custom test script which includes the necessary NODE_OPTIONS for ES modules
       run: npm test
+      env:
+        # Provide a dummy database URL or configured test DB so tests don't immediately crash if they check for it
+        DATABASE_URL: postgres://postgres:postgres@localhost:5432/test_db
+        NODE_ENV: test
