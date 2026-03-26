@@ -1,12 +1,16 @@
 import React from 'react';
+import { ArrowRight } from 'lucide-react';
 import HeroCarousel from '../components/home/HeroCarousel';
 import FlashSales from '../components/home/FlashSales';
 import CategoryGrid from '../components/home/CategoryGrid';
 import ProductCarousel from '../components/home/ProductCarousel';
 import ProductCard from '../components/product/ProductCard';
-import { formatCurrency } from '../utils/formatters';
+import { Button } from '../components/common/Button';
 
-export default function HomePage({ products, categories, onViewProduct, onAddToCart }) {
+export default function HomePage({ products, categories, onViewProduct, onAddToCart, onNavigate }) {
+  // Get first 15 products for the "All Products" section
+  const displayProducts = products?.slice(0, 15) || [];
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Carousel */}
@@ -21,12 +25,14 @@ export default function HomePage({ products, categories, onViewProduct, onAddToC
       {/* Best Sellers Carousel */}
       <ProductCarousel 
         title="🔥 Sản phẩm bán chạy"
+        products={products?.filter(p => p.is_featured).slice(0, 10) || []}
         onViewProduct={onViewProduct}
       />
 
       {/* New Arrivals */}
       <ProductCarousel 
         title="✨ Sản phẩm mới nhất"
+        products={[...products].reverse().slice(0, 10) || []}
         onViewProduct={onViewProduct}
       />
 
@@ -39,7 +45,10 @@ export default function HomePage({ products, categories, onViewProduct, onAddToC
                 <span className="text-sm font-medium opacity-80 mb-2">Ưu đãi đặc biệt</span>
                 <h3 className="text-3xl font-bold mb-4">MacBook Pro M3</h3>
                 <p className="text-lg opacity-90 mb-6">Giảm đến 15% khi mua kèm iPad</p>
-                <button className="self-start px-6 py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-gray-100 transition-colors">
+                <button 
+                  onClick={() => onNavigate?.('shop')}
+                  className="self-start px-6 py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-gray-100 transition-colors"
+                >
                   Xem ngay
                 </button>
               </div>
@@ -56,7 +65,10 @@ export default function HomePage({ products, categories, onViewProduct, onAddToC
                 <span className="text-sm font-medium opacity-80 mb-2">Tai nghe cao cấp</span>
                 <h3 className="text-3xl font-bold mb-4">AirPods Pro 2</h3>
                 <p className="text-lg opacity-90 mb-6">Chip H2, chống ồn chủ động</p>
-                <button className="self-start px-6 py-3 bg-white text-purple-600 font-bold rounded-lg hover:bg-gray-100 transition-colors">
+                <button 
+                  onClick={() => onNavigate?.('shop')}
+                  className="self-start px-6 py-3 bg-white text-purple-600 font-bold rounded-lg hover:bg-gray-100 transition-colors"
+                >
                   Mua ngay
                 </button>
               </div>
@@ -76,12 +88,14 @@ export default function HomePage({ products, categories, onViewProduct, onAddToC
       <section className="py-12 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Tất cả sản phẩm</h2>
-            <p className="text-gray-600">Khám phá bộ sưu tập công nghệ đa dạng của chúng tôi</p>
+            <h2 className="text-3xl font-bold text-gray-900 mb-3">Khám phá sản phẩm</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Chúng tôi có {products?.length || 0} sản phẩm công nghệ đa dạng, từ điện thoại, laptop đến phụ kiện và thiết bị gaming
+            </p>
           </div>
           
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
-            {products.slice(0, 10).map((product) => (
+            {displayProducts.map((product) => (
               <ProductCard
                 key={product.id}
                 product={product}
@@ -91,13 +105,14 @@ export default function HomePage({ products, categories, onViewProduct, onAddToC
             ))}
           </div>
 
-          <div className="text-center mt-8">
-            <a 
-              href="/shop" 
-              className="inline-flex items-center gap-2 px-6 py-3 bg-black text-white font-medium rounded-lg hover:bg-gray-800 transition-colors"
+          <div className="text-center mt-10">
+            <Button 
+              onClick={() => onNavigate?.('shop')}
+              size="xl"
+              className="bg-black hover:bg-gray-800"
             >
-              Xem thêm sản phẩm
-            </a>
+              Xem tất cả sản phẩm <ArrowRight size={20} className="ml-2" />
+            </Button>
           </div>
         </div>
       </section>
@@ -111,28 +126,28 @@ export default function HomePage({ products, categories, onViewProduct, onAddToC
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="text-center p-6 bg-white rounded-xl border border-gray-100">
+            <div className="text-center p-6 bg-white rounded-xl border border-gray-100 shadow-sm">
               <div className="w-16 h-16 mx-auto mb-4 bg-blue-50 rounded-full flex items-center justify-center">
                 <span className="text-3xl">✓</span>
               </div>
               <h3 className="font-bold text-gray-900 mb-2">100% Chính hãng</h3>
               <p className="text-sm text-gray-600">Tất cả sản phẩm đều có nguồn gốc rõ ràng, đầy đủ giấy tờ</p>
             </div>
-            <div className="text-center p-6 bg-white rounded-xl border border-gray-100">
+            <div className="text-center p-6 bg-white rounded-xl border border-gray-100 shadow-sm">
               <div className="w-16 h-16 mx-auto mb-4 bg-green-50 rounded-full flex items-center justify-center">
                 <span className="text-3xl">🚚</span>
               </div>
               <h3 className="font-bold text-gray-900 mb-2">Giao hàng nhanh</h3>
               <p className="text-sm text-gray-600">Nhận hàng trong 24h tại nội thành, 2-3 ngày toàn quốc</p>
             </div>
-            <div className="text-center p-6 bg-white rounded-xl border border-gray-100">
+            <div className="text-center p-6 bg-white rounded-xl border border-gray-100 shadow-sm">
               <div className="w-16 h-16 mx-auto mb-4 bg-purple-50 rounded-full flex items-center justify-center">
                 <span className="text-3xl">🛡️</span>
               </div>
               <h3 className="font-bold text-gray-900 mb-2">Bảo hành 12-24 tháng</h3>
               <p className="text-sm text-gray-600">Bảo hành chính hãng tại các trung tâm trên toàn quốc</p>
             </div>
-            <div className="text-center p-6 bg-white rounded-xl border border-gray-100">
+            <div className="text-center p-6 bg-white rounded-xl border border-gray-100 shadow-sm">
               <div className="w-16 h-16 mx-auto mb-4 bg-orange-50 rounded-full flex items-center justify-center">
                 <span className="text-3xl">💬</span>
               </div>

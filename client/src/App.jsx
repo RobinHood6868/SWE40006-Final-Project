@@ -84,11 +84,12 @@ export default function App() {
       
       <main className="pt-20 sm:pt-24">
         {currentView === 'home' && (
-          <Home 
+          <Home
             products={products}
             categories={categories}
             onViewProduct={handleViewProduct}
             onAddToCart={handleAddToCart}
+            onNavigate={handleNavigate}
           />
         )}
         
