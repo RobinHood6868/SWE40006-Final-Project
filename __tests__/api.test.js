@@ -5,56 +5,57 @@ import request from 'supertest';
 jest.unstable_mockModule('../server/db.js', () => ({
   getPool: () => ({
     query: jest.fn().mockImplementation(async (query, params) => {
-      // 1. GET /db/status
+      // GET /db/status
       if (query === 'SELECT 1') return { rows: [{ '?column?': 1 }] };
-      
-      // 2. GET /categories
+
+      // GET /categories
       if (query.includes('FROM categories')) {
         return { rows: [
           { id: 1, name: 'Điện thoại', slug: 'dien-thoai', product_count: 5 },
           { id: 2, name: 'Laptop', slug: 'laptop', product_count: 2 }
         ]};
       }
-      
-      // 3. GET /products/:id
+
+      // GET /products/:id
       if (query.includes('FROM products') && query.includes('WHERE p.id = $1')) {
-        if (params[0] === '1') return { rows: [{ id: 1, name: 'iPhone 15', price: 1000 }] };
-        if (params[0] === '999') return { rows: [] }; // Not found
-      }
-      
-      // 4. GET /products (with category search)
-      if (query.includes('FROM products') && query.includes('slug = $')) {
-        return { rows: [{ id: 1, name: 'iPhone 15', category_name: 'Điện thoại' }] };
+        if (params[0] === '1') return { rows: [{ id: 1, name: 'iPhone 15', price: 1000, category_name: 'Điện thoại' }] };
+        if (params[0] === '999') return { rows: [] };
       }
 
-      // 5. GET /products (with name search)
-      if (query.includes('FROM products') && query.includes('name ILIKE $')) {
-        return { rows: [{ id: 2, name: 'MacBook', category_name: 'Laptop' }] };
+      // GET /products with category filter
+      if (query.includes('FROM products') && query.includes('slug = $')) {
+        return { rows: [{ id: 1, name: 'iPhone 15', price: 1000, category_name: 'Điện thoại' }] };
       }
-      
-      // 6. GET /products (all)
+
+      // GET /products with search filter
+      if (query.includes('FROM products') && query.includes('name ILIKE $')) {
+        return { rows: [{ id: 2, name: 'MacBook', price: 2000, category_name: 'Laptop' }] };
+      }
+
+      // GET /products (all)
       if (query.includes('FROM products')) {
         return { rows: [
-          { id: 1, name: 'iPhone 15', price: 1000 },
-          { id: 2, name: 'MacBook', price: 2000 }
+          { id: 1, name: 'iPhone 15', price: 1000, category_name: 'Điện thoại' },
+          { id: 2, name: 'MacBook', price: 2000, category_name: 'Laptop' }
         ]};
       }
-      
-      // 7. GET /orders/lookup
+
+      // GET /orders/lookup - order
       if (query.includes('FROM orders WHERE id = $1')) {
-        if (params[0] === '100') return { rows: [{ id: 100, guest_email: 'test@test.com', total: 1000 }] };
+        if (params[0] === '100') return { rows: [{ id: 100, guest_email: 'test@test.com', total: 1000, status: 'pending' }] };
         return { rows: [] };
       }
+      // GET /orders/lookup - order items
       if (query.includes('FROM order_items oi JOIN products p')) {
         return { rows: [{ id: 1, product_id: 1, quantity: 1, price: 1000, name: 'iPhone 15' }] };
       }
-      
+
       return { rows: [] };
     }),
     connect: jest.fn().mockResolvedValue({
-      query: jest.fn().mockImplementation(async (query, params) => {
-         if (query.includes('INSERT INTO orders')) return { rows: [{ id: 200 }] };
-         return { rows: [] };
+      query: jest.fn().mockImplementation(async (query) => {
+        if (query.includes('INSERT INTO orders')) return { rows: [{ id: 200 }] };
+        return { rows: [] };
       }),
       release: jest.fn()
     })
@@ -65,96 +66,161 @@ jest.unstable_mockModule('../server/db.js', () => ({
 
 const { default: app } = await import('../server/app.js');
 
-describe('API Tests', () => {
-  // 1. GET /products
-  it('GET /api/products should return 200 and an array', async () => {
-    const response = await request(app).get('/api/products');
-    expect(response.status).toBe(200);
-    expect(Array.isArray(response.body)).toBeTruthy();
-    expect(response.body.length).toBeGreaterThan(0);
-  });
+// ─── Test Suite ──────────────────────────────────────────────────────────────
 
-  // 2. GET /products with category filter
-  it('GET /api/products?category=dien-thoai should filter by category', async () => {
-    const response = await request(app).get('/api/products?category=dien-thoai');
-    expect(response.status).toBe(200);
-    expect(response.body[0].category_name).toBe('Điện thoại');
-  });
+describe('Volta Tech Store API', () => {
 
-  // 3. GET /products with search query
-  it('GET /api/products?search=Mac should filter by name', async () => {
-    const response = await request(app).get('/api/products?search=Mac');
-    expect(response.status).toBe(200);
-    expect(response.body[0].name).toBe('MacBook');
-  });
+  // ─── API Response Format ──────────────────────────────────────────────────
 
-  // 4. GET /products/:id (valid)
-  it('GET /api/products/1 should return product details', async () => {
-    const response = await request(app).get('/api/products/1');
-    expect(response.status).toBe(200);
-    expect(response.body.id).toBe(1);
-    expect(response.body.name).toBe('iPhone 15');
-  });
-
-  // 5. GET /products/:id (invalid)
-  it('GET /api/products/999 should return 404', async () => {
-    const response = await request(app).get('/api/products/999');
-    expect(response.status).toBe(404);
-  });
-
-  // 6. GET /categories
-  it('GET /api/categories should return active categories', async () => {
-    const response = await request(app).get('/api/categories');
-    expect(response.status).toBe(200);
-    expect(response.body.length).toBe(2);
-    expect(response.body[0].slug).toBe('dien-thoai');
-  });
-
-  // 7. POST /orders (missing cart items)
-  it('POST /api/orders should fail if cart is empty', async () => {
-    const response = await request(app).post('/api/orders').send({
-      items: [],
-      guest_name: 'Test',
-      shipping_address: '123 Test St'
+  describe('API response format', () => {
+    it('should return JSON content-type for all API endpoints', async () => {
+      const res = await request(app).get('/api/products');
+      expect(res.headers['content-type']).toMatch(/json/);
     });
-    expect(response.status).toBe(400);
-    expect(response.body.error).toBe('Giỏ hàng trống');
-  });
 
-  // 8. POST /orders (missing shipping info)
-  it('POST /api/orders should fail if shipping info is missing', async () => {
-    const response = await request(app).post('/api/orders').send({
-      items: [{ product_id: 1, quantity: 1, price: 1000 }]
+    it('should not expose server technology via x-powered-by header', async () => {
+      const res = await request(app).get('/api/products');
+      expect(res.headers['x-powered-by']).toBeUndefined();
     });
-    expect(response.status).toBe(400);
-    expect(response.body.error).toBe('Thiếu thông tin giao hàng');
   });
 
-  // 9. POST /orders (success)
-  it('POST /api/orders should successfully create an order', async () => {
-    const response = await request(app).post('/api/orders').send({
-      items: [{ product_id: 1, quantity: 1, price: 1000 }],
-      guest_name: 'Test Name',
-      guest_email: 'test@test.com',
-      shipping_address: '123 Test St',
-      total: 1000
+  // ─── Products ────────────────────────────────────────────────────────────
+
+  describe('GET /api/products', () => {
+    it('should return all products with correct structure', async () => {
+      const res = await request(app).get('/api/products');
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body)).toBe(true);
+      expect(res.body.length).toBeGreaterThan(0);
+      // Verify each product has required fields
+      for (const product of res.body) {
+        expect(product).toHaveProperty('id');
+        expect(product).toHaveProperty('name');
+        expect(product).toHaveProperty('price');
+        expect(product).toHaveProperty('category_name');
+      }
     });
-    expect(response.status).toBe(200);
-    expect(response.body.success).toBe(true);
-    expect(response.body.order_id).toBe(200);
+
+    it('should filter products by category slug', async () => {
+      const res = await request(app).get('/api/products?category=dien-thoai');
+      expect(res.status).toBe(200);
+      expect(res.body.length).toBeGreaterThan(0);
+      expect(res.body[0].category_name).toBe('Điện thoại');
+    });
+
+    it('should search products by name (case-insensitive)', async () => {
+      const res = await request(app).get('/api/products?search=Mac');
+      expect(res.status).toBe(200);
+      expect(res.body.length).toBeGreaterThan(0);
+      expect(res.body[0].name).toContain('Mac');
+    });
   });
 
-  // 10. GET /orders/lookup (valid)
-  it('GET /api/orders/lookup should return order details', async () => {
-    const response = await request(app).get('/api/orders/lookup?id=100&email=test@test.com');
-    expect(response.status).toBe(200);
-    expect(response.body.id).toBe(100);
-    expect(response.body.items.length).toBe(1);
+  describe('GET /api/products/:id', () => {
+    it('should return the correct product for a valid ID', async () => {
+      const res = await request(app).get('/api/products/1');
+      expect(res.status).toBe(200);
+      expect(res.body.id).toBe(1);
+      expect(res.body.name).toBe('iPhone 15');
+      expect(res.body).toHaveProperty('price');
+      expect(res.body).toHaveProperty('category_name');
+    });
+
+    it('should return 404 with error message for non-existent ID', async () => {
+      const res = await request(app).get('/api/products/999');
+      expect(res.status).toBe(404);
+      expect(res.body).toHaveProperty('error');
+    });
   });
 
-  // 11. GET /orders/lookup (missing info)
-  it('GET /api/orders/lookup should fail if missing email or id', async () => {
-    const response = await request(app).get('/api/orders/lookup?id=100');
-    expect(response.status).toBe(400);
+  // ─── Categories ──────────────────────────────────────────────────────────
+
+  describe('GET /api/categories', () => {
+    it('should return all categories with product counts', async () => {
+      const res = await request(app).get('/api/categories');
+      expect(res.status).toBe(200);
+      expect(Array.isArray(res.body)).toBe(true);
+      expect(res.body.length).toBe(2);
+      // Verify each category has required fields
+      for (const cat of res.body) {
+        expect(cat).toHaveProperty('id');
+        expect(cat).toHaveProperty('name');
+        expect(cat).toHaveProperty('slug');
+        expect(cat).toHaveProperty('product_count');
+        expect(typeof cat.product_count).toBe('number');
+      }
+    });
+  });
+
+  // ─── Orders: Create ──────────────────────────────────────────────────────
+
+  describe('POST /api/orders', () => {
+    it('should create an order and return order_id on success', async () => {
+      const res = await request(app).post('/api/orders').send({
+        items: [{ product_id: 1, quantity: 1, price: 1000 }],
+        guest_name: 'Nguyen Van A',
+        guest_email: 'test@test.com',
+        shipping_address: '123 Le Loi, HCMC',
+        total: 1000
+      });
+      expect(res.status).toBe(200);
+      expect(res.body.success).toBe(true);
+      expect(typeof res.body.order_id).toBe('number');
+    });
+
+    it('should reject order with empty cart', async () => {
+      const res = await request(app).post('/api/orders').send({
+        items: [],
+        guest_name: 'Test',
+        shipping_address: '123 Test St'
+      });
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Giỏ hàng trống');
+    });
+
+    it('should reject order when guest_name is missing', async () => {
+      const res = await request(app).post('/api/orders').send({
+        items: [{ product_id: 1, quantity: 1, price: 1000 }],
+        shipping_address: '123 Test St'
+      });
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Thiếu thông tin giao hàng');
+    });
+
+    it('should reject order when shipping_address is missing', async () => {
+      const res = await request(app).post('/api/orders').send({
+        items: [{ product_id: 1, quantity: 1, price: 1000 }],
+        guest_name: 'Test'
+      });
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Thiếu thông tin giao hàng');
+    });
+  });
+
+  // ─── Orders: Lookup ──────────────────────────────────────────────────────
+
+  describe('GET /api/orders/lookup', () => {
+    it('should return full order details with items for valid lookup', async () => {
+      const res = await request(app).get('/api/orders/lookup?id=100&email=test@test.com');
+      expect(res.status).toBe(200);
+      expect(res.body.id).toBe(100);
+      expect(res.body.guest_email).toBe('test@test.com');
+      expect(Array.isArray(res.body.items)).toBe(true);
+      expect(res.body.items.length).toBeGreaterThan(0);
+      expect(res.body.items[0]).toHaveProperty('name');
+      expect(res.body.items[0]).toHaveProperty('price');
+    });
+
+    it('should return 400 when email is missing from lookup', async () => {
+      const res = await request(app).get('/api/orders/lookup?id=100');
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Cần mã đơn và email');
+    });
+
+    it('should return 400 when order ID is missing', async () => {
+      const res = await request(app).get('/api/orders/lookup?email=test@test.com');
+      expect(res.status).toBe(400);
+      expect(res.body.error).toBe('Cần mã đơn và email');
+    });
   });
 });
