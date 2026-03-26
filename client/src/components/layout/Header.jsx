@@ -17,6 +17,13 @@ export default function Header({ onCartClick, onNavigate, currentView, onSearch 
     }
   };
 
+  // Clear header search when navigating away
+  React.useEffect(() => {
+    if (currentView !== 'shop') {
+      setSearchQuery('');
+    }
+  }, [currentView]);
+
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100">
       {/* Top Bar */}
@@ -75,7 +82,7 @@ export default function Header({ onCartClick, onNavigate, currentView, onSearch 
                 placeholder="Tìm kiếm sản phẩm, danh mục..."
                 className="w-full h-10 pl-4 pr-12 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 transition-all"
               />
-              <button 
+              <button
                 type="submit"
                 className="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
               >
@@ -89,8 +96,8 @@ export default function Header({ onCartClick, onNavigate, currentView, onSearch 
             <button
               onClick={() => onNavigate('track')}
               className={`hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                currentView === 'track' 
-                  ? 'bg-blue-50 text-blue-600' 
+                currentView === 'track'
+                  ? 'bg-blue-50 text-blue-600'
                   : 'text-gray-700 hover:bg-gray-50'
               }`}
             >
@@ -132,7 +139,7 @@ export default function Header({ onCartClick, onNavigate, currentView, onSearch 
             placeholder="Tìm kiếm sản phẩm..."
             className="w-full h-10 pl-4 pr-12 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition-all"
           />
-          <button 
+          <button
             type="submit"
             className="absolute right-1 top-1/2 -translate-y-1/2 p-1.5 bg-blue-600 text-white rounded-md"
           >

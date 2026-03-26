@@ -9,8 +9,14 @@ SWE40006-Final-Project/
 ├── client/                 # React frontend (Vite + Tailwind CSS)
 │   ├── src/
 │   │   ├── App.jsx         # Main application component
+│   │   ├── main.jsx        # Entry point
 │   │   ├── index.css       # Global styles (Tailwind)
-│   │   └── main.jsx        # Entry point
+│   │   ├── components/     # Reusable UI components
+│   │   ├── pages/          # Page components
+│   │   ├── hooks/          # Custom React hooks
+│   │   ├── stores/         # State management (Zustand)
+│   │   ├── utils/          # Utility functions
+│   │   └── assets/         # Static assets (images, fonts)
 │   ├── public/
 │   ├── index.html
 │   ├── vite.config.js
@@ -19,9 +25,13 @@ SWE40006-Final-Project/
 │   ├── app.js              # Express app (API routes + static serving)
 │   ├── index.js            # Server entry point (env loading, DB connect)
 │   ├── routes.js           # API route handlers
-│   └── db.js               # Neon Postgres connection & schema init
+│   ├── db.js               # Neon Postgres connection & schema init
+│   ├── seed.js             # Database seeding utilities
+│   ├── fix-images.js       # Image path fix utility
+│   ├── fix-all-images.js   # Batch image fix utility
+│   └── refresh-products.js # Product refresh utility
 ├── __tests__/
-│   └── api.test.js         # Jest + Supertest API tests
+│   └── api.test.js         # Jest + Supertest API tests (18 tests)
 ├── .github/workflows/
 │   └── ci-cd.yml           # CI/CD pipeline (test → deploy to EC2)
 ├── ecosystem.config.cjs    # PM2 process manager config
@@ -83,7 +93,7 @@ Vite dev server runs at `http://localhost:5173` (with hot reload)
 npm test
 ```
 
-Runs 11 API tests using Jest + Supertest with mocked database.
+Runs 18 API tests using Jest + Supertest with mocked database.
 
 ## Production / AWS EC2 Deployment
 

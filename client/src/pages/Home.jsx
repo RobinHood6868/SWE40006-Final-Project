@@ -23,14 +23,14 @@ export default function HomePage({ products, categories, onViewProduct, onAddToC
       <CategoryGrid />
 
       {/* Best Sellers Carousel */}
-      <ProductCarousel 
+      <ProductCarousel
         title="🔥 Sản phẩm bán chạy"
         products={products?.filter(p => p.is_featured).slice(0, 10) || []}
         onViewProduct={onViewProduct}
       />
 
       {/* New Arrivals */}
-      <ProductCarousel 
+      <ProductCarousel
         title="✨ Sản phẩm mới nhất"
         products={[...products].reverse().slice(0, 10) || []}
         onViewProduct={onViewProduct}
@@ -45,7 +45,7 @@ export default function HomePage({ products, categories, onViewProduct, onAddToC
                 <span className="text-sm font-medium opacity-80 mb-2">Ưu đãi đặc biệt</span>
                 <h3 className="text-3xl font-bold mb-4">MacBook Pro M3</h3>
                 <p className="text-lg opacity-90 mb-6">Giảm đến 15% khi mua kèm iPad</p>
-                <button 
+                <button
                   onClick={() => onNavigate?.('shop')}
                   className="self-start px-6 py-3 bg-white text-blue-600 font-bold rounded-lg hover:bg-gray-100 transition-colors"
                 >
@@ -53,8 +53,8 @@ export default function HomePage({ products, categories, onViewProduct, onAddToC
                 </button>
               </div>
               <div className="absolute right-0 bottom-0 w-64 h-full opacity-20">
-                <img 
-                  src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400" 
+                <img
+                  src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=400"
                   alt="MacBook"
                   className="w-full h-full object-cover"
                 />
@@ -65,7 +65,7 @@ export default function HomePage({ products, categories, onViewProduct, onAddToC
                 <span className="text-sm font-medium opacity-80 mb-2">Tai nghe cao cấp</span>
                 <h3 className="text-3xl font-bold mb-4">AirPods Pro 2</h3>
                 <p className="text-lg opacity-90 mb-6">Chip H2, chống ồn chủ động</p>
-                <button 
+                <button
                   onClick={() => onNavigate?.('shop')}
                   className="self-start px-6 py-3 bg-white text-purple-600 font-bold rounded-lg hover:bg-gray-100 transition-colors"
                 >
@@ -73,8 +73,8 @@ export default function HomePage({ products, categories, onViewProduct, onAddToC
                 </button>
               </div>
               <div className="absolute right-0 bottom-0 w-48 h-full opacity-20">
-                <img 
-                  src="https://images.unsplash.com/photo-1606841837239-c5a1a4a07af7?w=400" 
+                <img
+                  src="https://images.unsplash.com/photo-1606841837239-c5a1a4a07af7?w=400"
                   alt="AirPods"
                   className="w-full h-full object-cover"
                 />
@@ -93,7 +93,7 @@ export default function HomePage({ products, categories, onViewProduct, onAddToC
               Chúng tôi có {products?.length || 0} sản phẩm công nghệ đa dạng, từ điện thoại, laptop đến phụ kiện và thiết bị gaming
             </p>
           </div>
-          
+
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
             {displayProducts.map((product) => (
               <ProductCard
@@ -106,7 +106,7 @@ export default function HomePage({ products, categories, onViewProduct, onAddToC
           </div>
 
           <div className="text-center mt-10">
-            <Button 
+            <Button
               onClick={() => onNavigate?.('shop')}
               size="xl"
               className="bg-black hover:bg-gray-800"
@@ -124,7 +124,7 @@ export default function HomePage({ products, categories, onViewProduct, onAddToC
             <h2 className="text-2xl font-bold text-gray-900 mb-2">Tại sao chọn Volta?</h2>
             <p className="text-gray-600">Chúng tôi cam kết mang đến trải nghiệm mua sắm tốt nhất</p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="text-center p-6 bg-white rounded-xl border border-gray-100 shadow-sm">
               <div className="w-16 h-16 mx-auto mb-4 bg-blue-50 rounded-full flex items-center justify-center">

@@ -85,8 +85,8 @@ export default function ProductFilters({
                   onClick={() => onCategoryChange('')}
                   className={clsx(
                     'w-full text-left text-sm px-3 py-2 rounded-lg transition-colors',
-                    selectedCategory === '' 
-                      ? 'bg-blue-50 text-blue-600 font-medium' 
+                    selectedCategory === ''
+                      ? 'bg-blue-50 text-blue-600 font-medium'
                       : 'text-gray-600 hover:bg-gray-50'
                   )}
                 >
@@ -98,8 +98,8 @@ export default function ProductFilters({
                     onClick={() => onCategoryChange(cat.slug)}
                     className={clsx(
                       'w-full text-left text-sm px-3 py-2 rounded-lg transition-colors',
-                      selectedCategory === cat.slug 
-                        ? 'bg-blue-50 text-blue-600 font-medium' 
+                      selectedCategory === cat.slug
+                        ? 'bg-blue-50 text-blue-600 font-medium'
                         : 'text-gray-600 hover:bg-gray-50'
                     )}
                   >
@@ -138,9 +138,9 @@ export default function ProductFilters({
                     className="text-sm"
                   />
                 </div>
-                <Button 
+                <Button
                   onClick={handleApplyPriceRange}
-                  size="sm" 
+                  size="sm"
                   className="w-full"
                 >
                   Áp dụng
@@ -148,9 +148,9 @@ export default function ProductFilters({
                 {/* Price Slider Visualization */}
                 <div className="pt-2">
                   <div className="relative h-1 bg-gray-200 rounded-full">
-                    <div 
+                    <div
                       className="absolute h-full bg-blue-600 rounded-full"
-                      style={{ 
+                      style={{
                         left: `${(localPriceRange.min || 0) / 500000 * 100}%`,
                         right: `${100 - (localPriceRange.max || 50000000) / 50000000 * 100}%`
                       }}
@@ -182,8 +182,8 @@ export default function ProductFilters({
                     onClick={() => onRatingChange(rating === stars ? null : stars)}
                     className={clsx(
                       'w-full flex items-center gap-2 px-3 py-2 rounded-lg transition-colors',
-                      rating === stars 
-                        ? 'bg-blue-50 border-blue-200 border' 
+                      rating === stars
+                        ? 'bg-blue-50 border-blue-200 border'
                         : 'hover:bg-gray-50'
                     )}
                   >
@@ -241,9 +241,9 @@ export default function ProductFilters({
 
           {/* Clear Filters */}
           <div className="pt-4 border-t border-gray-100">
-            <Button 
-              variant="ghost" 
-              size="sm" 
+            <Button
+              variant="ghost"
+              size="sm"
               onClick={onClear}
               className="w-full text-gray-500"
             >

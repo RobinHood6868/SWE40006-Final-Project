@@ -42,23 +42,32 @@ export default function FlashSales({ onViewProduct, onAddToCart }) {
     fetchProducts();
   }, []);
 
-  // Auto-play carousel
+  // Auto-play carousel - slide automatically every 2 seconds
   useEffect(() => {
     if (!isAutoPlaying || products.length === 0) return;
-    
+
     const timer = setInterval(() => {
-      setCurrentIndex(prev => (prev + 1) % Math.max(1, products.length - 3));
-    }, 3000);
-    
+      setCurrentIndex(prev => {
+        const maxIndex = Math.max(0, products.length - 4);
+        return prev >= maxIndex ? 0 : prev + 1;
+      });
+    }, 2000);
+
     return () => clearInterval(timer);
   }, [isAutoPlaying, products.length]);
 
   const nextSlide = () => {
-    setCurrentIndex(prev => (prev + 1) % Math.max(1, products.length - 3));
+    setCurrentIndex(prev => {
+      const maxIndex = Math.max(0, products.length - 4);
+      return prev >= maxIndex ? 0 : prev + 1;
+    });
   };
 
   const prevSlide = () => {
-    setCurrentIndex(prev => (prev - 1 + Math.max(1, products.length - 3)) % Math.max(1, products.length - 3));
+    setCurrentIndex(prev => {
+      const maxIndex = Math.max(0, products.length - 4);
+      return prev <= 0 ? maxIndex : prev - 1;
+    });
   };
 
   if (isExpired || products.length === 0) {
@@ -110,10 +119,6 @@ export default function FlashSales({ onViewProduct, onAddToCart }) {
             </div>
           </div>
 
-          <div className="hidden md:flex items-center gap-2 text-red-600 font-medium">
-            <span className="text-sm">Kéo để xem thêm</span>
-            <ChevronRight size={16} />
-          </div>
         </div>
 
         {/* Carousel */}
@@ -134,9 +139,9 @@ export default function FlashSales({ onViewProduct, onAddToCart }) {
 
           {/* Products Carousel */}
           <div className="overflow-hidden">
-            <div 
+            <div
               className="flex gap-4 transition-transform duration-500 ease-out"
-              style={{ transform: `translateX(-${currentIndex * (280 + 16)}px)` }}
+              style={{ transform: `translateX(-${currentIndex * (272 + 16)}px)` }}
             >
               {products.map((product) => (
                 <div
@@ -228,10 +233,11 @@ export default function FlashSales({ onViewProduct, onAddToCart }) {
                 key={idx}
                 onClick={() => setCurrentIndex(idx)}
                 className={`h-2 rounded-full transition-all duration-300 ${
-                  idx === currentIndex 
-                    ? 'w-8 bg-red-600' 
+                  idx === currentIndex
+                    ? 'w-8 bg-red-600'
                     : 'w-2 bg-red-200 hover:bg-red-300'
                 }`}
+                aria-label={`Go to slide ${idx + 1}`}
               />
             ))}
           </div>
