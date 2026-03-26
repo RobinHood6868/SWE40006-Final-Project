@@ -41,18 +41,6 @@ const flashSaleProducts = [
     review_count: 156,
     stock: 12,
     sold: 78
-  },
-  {
-    id: 104,
-    name: 'Sony WH-1000XM5',
-    price: 7990000,
-    original_price: 9990000,
-    image_url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80',
-    category_name: 'Tai nghe',
-    rating: 4.9,
-    review_count: 312,
-    stock: 5,
-    sold: 167
   }
 ];
 
