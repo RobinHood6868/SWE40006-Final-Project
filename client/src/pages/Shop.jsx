@@ -10,7 +10,7 @@ import { useDebounce } from '../hooks/useDebounce';
 
 const API = '/api';
 
-export default function ShopPage({ onNavigate }) {
+export default function ShopPage({ onNavigate, initialSearch = '' }) {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,7 +24,7 @@ export default function ShopPage({ onNavigate }) {
   const [rating, setRating] = useState(null);
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sortBy, setSortBy] = useState('default');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
   
   const debouncedSearch = useDebounce(searchQuery, 500);
 

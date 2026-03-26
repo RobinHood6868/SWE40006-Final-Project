@@ -19,7 +19,8 @@ export default function App() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+  const [searchQuery, setSearchQuery] = useState('');
+
   // UI State
   const [showCart, setShowCart] = useState(false);
   const [showWishlist, setShowWishlist] = useState(false);
@@ -69,12 +70,17 @@ export default function App() {
     showToast(`Đã thêm ${product.name} vào giỏ hàng`, 'success');
   };
 
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <Header 
+      <Header
         onCartClick={() => setShowCart(true)}
         onNavigate={handleNavigate}
         currentView={currentView}
+        onSearch={handleSearch}
       />
       
       <main className="pt-20 sm:pt-24">
@@ -89,8 +95,9 @@ export default function App() {
         )}
         
         {currentView === 'shop' && (
-          <Shop 
+          <Shop
             onNavigate={handleNavigate}
+            initialSearch={searchQuery}
           />
         )}
         

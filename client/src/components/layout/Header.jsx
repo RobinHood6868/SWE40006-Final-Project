@@ -3,7 +3,7 @@ import { Search, ShoppingCart, Package, Bell, User, ChevronDown } from 'lucide-r
 import { useCartStore } from '../../stores/cartStore';
 import MegaMenu from './MegaMenu';
 
-export default function Header({ onCartClick, onNavigate, currentView }) {
+export default function Header({ onCartClick, onNavigate, currentView, onSearch }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [showMegaMenu, setShowMegaMenu] = useState(false);
   const itemCount = useCartStore((state) => state.getItemCount());
@@ -11,8 +11,9 @@ export default function Header({ onCartClick, onNavigate, currentView }) {
   const handleSubmitSearch = (e) => {
     e.preventDefault();
     if (searchQuery.trim()) {
+      onSearch?.(searchQuery);
       onNavigate('shop');
-      // Search logic will be handled by parent
+      setSearchQuery('');
     }
   };
 

@@ -110,9 +110,10 @@ export default function FlashSales({ onViewProduct, onAddToCart }) {
             </div>
           </div>
 
-          <a href="/shop" className="hidden md:flex items-center gap-2 text-red-600 font-medium hover:underline">
-            Xem tất cả <TrendingUp size={16} />
-          </a>
+          <div className="hidden md:flex items-center gap-2 text-red-600 font-medium">
+            <span className="text-sm">Kéo để xem thêm</span>
+            <ChevronRight size={16} />
+          </div>
         </div>
 
         {/* Carousel */}
@@ -236,12 +237,7 @@ export default function FlashSales({ onViewProduct, onAddToCart }) {
           </div>
         </div>
 
-        {/* Mobile View All */}
-        <div className="md:hidden mt-6 text-center">
-          <a href="/shop" className="inline-flex items-center gap-2 text-red-600 font-medium">
-            Xem tất cả sản phẩm flash sale <TrendingUp size={16} />
-          </a>
-        </div>
+        {/* Mobile - No view all link */}
       </div>
     </section>
   );
