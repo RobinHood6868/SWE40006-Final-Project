@@ -2,6 +2,7 @@ import { fileURLToPath } from 'url';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { connectDB, initDB } from './db.js';
+import { seedMoreProducts } from './seed.js';
 import app from './app.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -30,6 +31,9 @@ app.listen(PORT, async () => {
       await connectDB(process.env.DATABASE_URL);
       await initDB();
       console.log('✅ Neon DB kết nối tự động từ .env');
+      // Seed more products
+      await seedMoreProducts();
+      console.log('✅ Đã thêm sản phẩm mới vào database');
     } catch (e) {
       console.error('❌ Kết nối DB thất bại:', e.message);
     }

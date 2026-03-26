@@ -6,6 +6,7 @@ import ProductFilters from '../components/product/ProductFilters';
 import ProductModal from '../components/product/ProductModal';
 import Skeleton, { SkeletonCard } from '../components/common/Skeleton';
 import { useCartStore } from '../stores/cartStore';
+import { useDebounce } from '../hooks/useDebounce';
 
 const API = '/api';
 
@@ -16,7 +17,7 @@ export default function ShopPage({ onNavigate }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [showFilters, setShowFilters] = useState(true);
   const [viewMode, setViewMode] = useState('grid');
-  
+
   // Filters
   const [selectedCategory, setSelectedCategory] = useState('');
   const [priceRange, setPriceRange] = useState({ min: null, max: null });
@@ -24,49 +25,66 @@ export default function ShopPage({ onNavigate }) {
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sortBy, setSortBy] = useState('default');
   const [searchQuery, setSearchQuery] = useState('');
+  
+  const debouncedSearch = useDebounce(searchQuery, 500);
 
   const { addItem } = useCartStore();
 
+  // Fetch products when filters change
   useEffect(() => {
-    const loadData = async () => {
+    const loadProducts = async () => {
+      setLoading(true);
       try {
-        const [catsRes, prodsRes] = await Promise.all([
-          fetch(`${API}/categories`),
-          fetch(`${API}/products`)
-        ]);
-        const cats = await catsRes.json();
-        const prods = await prodsRes.json();
-        setCategories(cats || []);
-        setProducts(prods || []);
+        const params = new URLSearchParams();
+        if (selectedCategory) params.set('category', selectedCategory);
+        if (debouncedSearch) params.set('search', debouncedSearch);
+        
+        const response = await fetch(`${API}/products?${params}`);
+        const data = await response.json();
+        setProducts(data || []);
       } catch (error) {
-        console.error('Error loading data:', error);
+        console.error('Error loading products:', error);
       } finally {
         setLoading(false);
       }
     };
-    loadData();
+    
+    loadProducts();
+  }, [selectedCategory, debouncedSearch]);
+
+  // Load categories once
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const response = await fetch(`${API}/categories`);
+        const data = await response.json();
+        setCategories(data || []);
+      } catch (error) {
+        console.error('Error loading categories:', error);
+      }
+    };
+    loadCategories();
   }, []);
 
-  // Filter and sort products
-  const filteredProducts = products
-    .filter(p => {
-      if (selectedCategory && p.category_slug !== selectedCategory) return false;
-      if (priceRange.min && p.price < priceRange.min) return false;
-      if (priceRange.max && p.price > priceRange.max) return false;
-      if (rating && p.rating < rating) return false;
-      if (inStockOnly && p.stock === 0) return false;
-      if (searchQuery && !p.name.toLowerCase().includes(searchQuery.toLowerCase())) return false;
-      return true;
-    })
-    .sort((a, b) => {
-      switch (sortBy) {
-        case 'price-asc': return a.price - b.price;
-        case 'price-desc': return b.price - a.price;
-        case 'rating': return b.rating - a.rating;
-        case 'best-selling': return (b.sold || 0) - (a.sold || 0);
-        default: return 0;
-      }
-    });
+  // Sort products (client-side)
+  const sortedProducts = [...products].sort((a, b) => {
+    switch (sortBy) {
+      case 'price-asc': return a.price - b.price;
+      case 'price-desc': return b.price - a.price;
+      case 'rating': return (b.rating || 0) - (a.rating || 0);
+      case 'newest': return new Date(b.created_at) - new Date(a.created_at);
+      default: return 0;
+    }
+  });
+
+  // Apply client-side filters (price, rating, stock)
+  const filteredProducts = sortedProducts.filter(p => {
+    if (priceRange.min && p.price < priceRange.min) return false;
+    if (priceRange.max && p.price > priceRange.max) return false;
+    if (rating && (p.rating || 0) < rating) return false;
+    if (inStockOnly && (p.stock || 0) === 0) return false;
+    return true;
+  });
 
   const handleClearFilters = () => {
     setSelectedCategory('');
