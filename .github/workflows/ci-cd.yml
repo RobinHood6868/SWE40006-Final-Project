@@ -20,7 +20,7 @@ jobs:
           cache: "npm"
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run Tests
         run: npm test
@@ -34,15 +34,6 @@ jobs:
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
 
     steps:
-      - name: Test SSH connection
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ${{ secrets.EC2_USER }}
-          key: ${{ secrets.EC2_SSH_KEY }}
-          debug: true
-          script: echo "SSH connection successful"
-
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -52,7 +43,7 @@ jobs:
           script: |
             cd ~/SWE40006-Final-Project
             git pull origin main
-            npm install
-            cd client && npm install && npm run build && cd ..
+            npm ci
+            cd client && npm ci && npm run build && cd ..
             pm2 restart ecosystem.config.cjs --env production || pm2 start ecosystem.config.cjs --env production
             pm2 save

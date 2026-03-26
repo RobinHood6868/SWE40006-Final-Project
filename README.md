@@ -23,7 +23,7 @@ SWE40006-Final-Project/
 ├── __tests__/
 │   └── api.test.js         # Jest + Supertest API tests
 ├── .github/workflows/
-│   └── deploy.yml          # CI pipeline (Node.js 20, npm test)
+│   └── ci-cd.yml           # CI/CD pipeline (test → deploy to EC2)
 ├── ecosystem.config.cjs    # PM2 process manager config
 ├── .env.example            # Environment variable template
 ├── .env                    # Local env vars (git-ignored)
@@ -109,9 +109,9 @@ pm2 start server/index.js --name "volta-server"
 
 ```bash
 pm2 status              # Check running processes
-pm2 logs volta-server   # View logs
-pm2 restart volta-server
-pm2 stop volta-server
+pm2 logs volta-store   # View logs
+pm2 restart volta-store
+pm2 stop volta-store
 ```
 
 ## Available Scripts
