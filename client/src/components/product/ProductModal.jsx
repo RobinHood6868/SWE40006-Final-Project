@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Plus, Minus, ShoppingCart, Heart, Share2, Shield, Truck, RotateCcw, Star, Check, Smartphone, Cpu, Camera, Battery, Wifi, Bluetooth, HardDrive, Monitor, Weight } from 'lucide-react';
+import { X, Plus, Minus, ShoppingCart, Heart, Share2, Shield, Truck, RotateCcw, Star, Check } from 'lucide-react';
 import { clsx } from 'clsx';
 import { formatCurrency, calculateDiscount } from '../../utils/formatters';
 import { Rating, RatingBreakdown } from '../common/Rating';
@@ -24,142 +24,6 @@ const mockRatings = [
   { stars: 1, count: 2 },
 ];
 
-// Detailed specifications by category
-const getSpecifications = (product) => {
-  const specs = [];
-  
-  // Common specs for all products
-  specs.push({
-    category: 'Thông tin chung',
-    items: [
-      { label: 'Danh mục', value: product.category_name || 'N/A' },
-      { label: 'Thương hiệu', value: product.name?.split(' ')[0] || 'N/A' },
-      { label: 'Tình trạng', value: 'Mới 100%', icon: Check },
-      { label: 'Bảo hành', value: '12 tháng', icon: Shield },
-    ]
-  });
-
-  // Phone/Tablet specs
-  if (product.category_name?.toLowerCase().includes('điện thoại') || 
-      product.category_name?.toLowerCase().includes('máy tính bảng')) {
-    specs.push({
-      category: 'Màn hình & Hiệu năng',
-      items: [
-        { label: 'Màn hình', value: product.name.includes('Pro') || product.name.includes('Ultra') ? '6.8" OLED, 120Hz' : '6.7" OLED, 120Hz', icon: Monitor },
-        { label: 'Chip xử lý', value: product.name.includes('iPhone') ? 'Apple A17 Pro' : 'Snapdragon 8 Gen 3', icon: Cpu },
-        { label: 'RAM', value: product.name.includes('Ultra') || product.name.includes('Pro') ? '12GB' : '8GB', icon: HardDrive },
-        { label: 'Bộ nhớ', value: '256GB', icon: HardDrive },
-      ]
-    });
-    specs.push({
-      category: 'Camera & Pin',
-      items: [
-        { label: 'Camera sau', value: product.name.includes('Ultra') ? '200MP + 50MP + 12MP' : '48MP + 12MP + 12MP', icon: Camera },
-        { label: 'Camera trước', value: '12MP', icon: Camera },
-        { label: 'Pin', value: product.name.includes('Plus') || product.name.includes('Ultra') ? '5000mAh' : '4400mAh', icon: Battery },
-        { label: 'Sạc nhanh', value: '45W', icon: Battery },
-      ]
-    });
-  }
-
-  // Laptop specs
-  if (product.category_name?.toLowerCase().includes('laptop')) {
-    specs.push({
-      category: 'Màn hình & Hiệu năng',
-      items: [
-        { label: 'Màn hình', value: product.name.includes('MacBook') ? '14.2" Liquid Retina XDR' : '15.6" OLED 3.5K', icon: Monitor },
-        { label: 'Chip xử lý', value: product.name.includes('M3') ? 'Apple M3 Pro' : 'Intel Core i9-13900H', icon: Cpu },
-        { label: 'RAM', value: product.name.includes('MacBook') ? '18GB Unified' : '32GB DDR5', icon: HardDrive },
-        { label: 'SSD', value: '512GB NVMe', icon: HardDrive },
-        { label: 'GPU', value: product.name.includes('MacBook') ? '18-core GPU' : 'NVIDIA RTX 4060 8GB', icon: Cpu },
-      ]
-    });
-    specs.push({
-      category: 'Kết nối & Pin',
-      items: [
-        { label: 'Pin', value: '72Wh, lên đến 22 giờ', icon: Battery },
-        { label: 'Kết nối không dây', value: 'Wi-Fi 6E, Bluetooth 5.3', icon: Wifi },
-        { label: 'Cổng kết nối', value: '3x Thunderbolt 4, HDMI, SD Card', icon: Check },
-        { label: 'Cân nặng', value: product.name.includes('MacBook') ? '1.61 kg' : '1.8 kg', icon: Weight },
-      ]
-    });
-  }
-
-  // Headphones specs
-  if (product.category_name?.toLowerCase().includes('tai nghe')) {
-    specs.push({
-      category: 'Âm thanh & Kết nối',
-      items: [
-        { label: 'Loại tai nghe', value: product.name.includes('AirPods') ? 'True Wireless' : 'Over-ear', icon: Check },
-        { label: 'Chống ồn', value: 'ANC chủ động', icon: Check },
-        { label: 'Driver', value: product.name.includes('AirPods') ? '11mm' : '40mm', icon: Check },
-        { label: 'Kết nối', value: 'Bluetooth 5.3', icon: Bluetooth },
-        { label: 'Thời lượng pin', value: product.name.includes('Sony') ? '30 giờ' : '6 giờ (ANC on)', icon: Battery },
-      ]
-    });
-  }
-
-  // Smartwatch specs
-  if (product.category_name?.toLowerCase().includes('đồng hồ')) {
-    specs.push({
-      category: 'Màn hình & Tính năng',
-      items: [
-        { label: 'Màn hình', value: '1.5" AMOLED, Always-on', icon: Monitor },
-        { label: 'Kích thước', value: '45mm', icon: Check },
-        { label: 'Chất liệu', value: 'Nhôm/Thép không gỉ', icon: Check },
-        { label: 'Chống nước', value: '5ATM + IP68', icon: Check },
-        { label: 'Pin', value: 'Lên đến 36 giờ', icon: Battery },
-      ]
-    });
-    specs.push({
-      category: 'Cảm biến & Sức khỏe',
-      items: [
-        { label: 'Cảm biến', value: 'Nhịp tim, SpO2, GPS', icon: Check },
-        { label: 'Theo dõi', value: 'Giấc ngủ, Calorie, Stress', icon: Check },
-        { label: 'Chế độ thể thao', value: '100+ chế độ', icon: Check },
-      ]
-    });
-  }
-
-  // Gaming specs
-  if (product.category_name?.toLowerCase().includes('gaming')) {
-    specs.push({
-      category: 'Hiệu năng & Đồ họa',
-      items: [
-        { label: 'CPU', value: product.name.includes('PlayStation') ? 'AMD Zen 2, 8 cores' : 'AMD Zen 2, 8 cores', icon: Cpu },
-        { label: 'GPU', value: '10.28 TFLOPS, RDNA 2', icon: Cpu },
-        { label: 'RAM', value: '16GB GDDR6', icon: HardDrive },
-        { label: 'SSD', value: product.name.includes('Xbox') ? '1TB NVMe' : '1TB Custom SSD', icon: HardDrive },
-        { label: 'Output', value: '4K @ 120Hz, 8K @ 60Hz', icon: Monitor },
-      ]
-    });
-  }
-
-  // Camera specs
-  if (product.category_name?.toLowerCase().includes('máy ảnh')) {
-    specs.push({
-      category: 'Cảm biến & Ống kính',
-      items: [
-        { label: 'Cảm biến', value: product.name.includes('Sony') ? '33MP Full-Frame' : '24MP Full-Frame', icon: Camera },
-        { label: 'ISO', value: '100-51200 (mở rộng 50-204800)', icon: Check },
-        { label: 'Quay video', value: '4K 60fps, 10-bit 4:2:2', icon: Camera },
-        { label: 'Lấy nét', value: '759 điểm AF, Eye AF', icon: Check },
-      ]
-    });
-    specs.push({
-      category: 'Màn hình & Kết nối',
-      items: [
-        { label: 'Màn hình', value: '3.0" LCD cảm ứng, xoay lật', icon: Monitor },
-        { label: 'Kính ngắm', value: 'OLED, 3.69M dots', icon: Check },
-        { label: 'Kết nối', value: 'Wi-Fi, Bluetooth, USB-C', icon: Wifi },
-        { label: 'Thẻ nhớ', value: 'Dual SD (UHS-II)', icon: HardDrive },
-      ]
-    });
-  }
-
-  return specs;
-};
-
 export default function ProductModal({ product, isOpen, onClose, onAddToCart }) {
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
@@ -183,7 +47,6 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }) 
 
   const discount = calculateDiscount(product.original_price, product.price);
   const stockRemaining = product.stock || Math.floor(Math.random() * 50);
-  const specifications = getSpecifications(product);
 
   const handleAddToCart = () => {
     onAddToCart({ ...product, qty: quantity });
@@ -251,7 +114,7 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }) 
             </div>
 
             {/* Right: Details */}
-            <div className="p-6">
+            <div className="p-6 flex flex-col">
               {/* Category & Badges */}
               <div className="flex items-center gap-2 mb-3">
                 <span className="text-xs text-gray-500 uppercase tracking-wide">{product.category_name}</span>
@@ -365,9 +228,9 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }) 
                 </div>
               </div>
 
-              {/* Tabs */}
-              <div className="border-t border-gray-100 pt-6">
-                <div className="flex gap-4 mb-4 border-b border-gray-100">
+              {/* Tabs - Only 2 tabs: Description & Reviews */}
+              <div className="border-t border-gray-100 pt-6 flex-1 overflow-hidden flex flex-col">
+                <div className="flex gap-4 mb-4 border-b border-gray-100 flex-shrink-0">
                   <button
                     onClick={() => setActiveTab('description')}
                     className={clsx(
@@ -377,22 +240,8 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }) 
                         : 'text-gray-600 hover:text-gray-900'
                     )}
                   >
-                    Mô tả
+                    Mô tả sản phẩm
                     {activeTab === 'description' && (
-                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
-                    )}
-                  </button>
-                  <button
-                    onClick={() => setActiveTab('specs')}
-                    className={clsx(
-                      'pb-3 text-sm font-medium transition-colors relative',
-                      activeTab === 'specs' 
-                        ? 'text-blue-600' 
-                        : 'text-gray-600 hover:text-gray-900'
-                    )}
-                  >
-                    Thông số
-                    {activeTab === 'specs' && (
                       <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600" />
                     )}
                   </button>
@@ -414,11 +263,21 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }) 
 
                 {/* Tab Content */}
                 {activeTab === 'description' ? (
-                  <div className="space-y-4">
-                    <div className="text-sm text-gray-600 leading-relaxed">
-                      {product.description || 'Sản phẩm chính hãng, bảo hành 12 tháng. Giao hàng toàn quốc. Đổi trả trong 30 ngày nếu có lỗi từ nhà sản xuất.'}
-                    </div>
-                    <div className="bg-blue-50 border border-blue-100 rounded-lg p-4">
+                  <div className="space-y-4 overflow-y-auto flex-1 pr-2">
+                    {/* HTML Description from database */}
+                    {product.description ? (
+                      <div 
+                        className="prose prose-sm max-w-none text-gray-600"
+                        dangerouslySetInnerHTML={{ __html: product.description }}
+                      />
+                    ) : (
+                      <div className="text-sm text-gray-600 leading-relaxed">
+                        Sản phẩm chính hãng, bảo hành 12 tháng. Giao hàng toàn quốc. Đổi trả trong 30 ngày nếu có lỗi từ nhà sản xuất.
+                      </div>
+                    )}
+                    
+                    {/* Promotions Box */}
+                    <div className="bg-blue-50 border border-blue-100 rounded-lg p-4 mt-4">
                       <h4 className="text-sm font-bold text-blue-900 mb-2">🎁 Ưu đãi đặc biệt:</h4>
                       <ul className="text-xs text-blue-700 space-y-1">
                         <li>• Miễn phí vận chuyển toàn quốc</li>
@@ -428,30 +287,11 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }) 
                       </ul>
                     </div>
                   </div>
-                ) : activeTab === 'specs' ? (
-                  <div className="space-y-4 max-h-96 overflow-y-auto">
-                    {specifications.map((specGroup, idx) => (
-                      <div key={idx} className="border border-gray-100 rounded-lg overflow-hidden">
-                        <div className="bg-gray-50 px-4 py-2 border-b border-gray-100">
-                          <h4 className="text-sm font-bold text-gray-900">{specGroup.category}</h4>
-                        </div>
-                        <div className="divide-y divide-gray-50">
-                          {specGroup.items.map((item, i) => (
-                            <div key={i} className="flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50">
-                              {item.icon && <item.icon size={14} className="text-gray-400 flex-shrink-0" />}
-                              <span className="text-xs text-gray-600 w-32 flex-shrink-0">{item.label}</span>
-                              <span className="text-xs font-medium text-gray-900">{item.value}</span>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
                 ) : (
-                  <div className="space-y-4">
+                  <div className="space-y-4 overflow-y-auto flex-1 pr-2">
                     {/* Rating Summary */}
                     <div className="flex items-start gap-6 pb-4 border-b border-gray-100">
-                      <div className="text-center">
+                      <div className="text-center flex-shrink-0">
                         <div className="text-4xl font-bold text-gray-900">{product.rating || 4.5}</div>
                         <Rating value={product.rating || 4.5} size="lg" />
                         <div className="text-xs text-gray-500 mt-1">{product.review_count || 218} đánh giá</div>
@@ -462,7 +302,7 @@ export default function ProductModal({ product, isOpen, onClose, onAddToCart }) 
                     </div>
 
                     {/* Reviews List */}
-                    <div className="space-y-4 max-h-64 overflow-y-auto">
+                    <div className="space-y-4">
                       {mockReviews
                         .filter(r => !reviewFilter || r.rating >= reviewFilter)
                         .map(review => (
