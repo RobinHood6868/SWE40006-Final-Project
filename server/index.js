@@ -3,6 +3,7 @@ import { readFileSync } from 'fs';
 import path from 'path';
 import { connectDB, initDB } from './db.js';
 import { seedMoreProducts } from './seed.js';
+import { fixProductImages } from './fix-images.js';
 import app from './app.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -34,6 +35,9 @@ app.listen(PORT, async () => {
       // Seed more products
       await seedMoreProducts();
       console.log('✅ Đã thêm sản phẩm mới vào database');
+      // Fix any missing images
+      await fixProductImages();
+      console.log('✅ Đã cập nhật ảnh sản phẩm');
     } catch (e) {
       console.error('❌ Kết nối DB thất bại:', e.message);
     }
