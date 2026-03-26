@@ -15,12 +15,19 @@ app.disable('x-powered-by'); // basic obfuscation
 
 app.use('/api', routes);
 
+// Serve the React frontend build
+const clientDistPath = path.join(__dirname, '..', 'client', 'dist');
+app.use(express.static(clientDistPath));
+
+// Catch-all: serve index.html for any non-API route (supports React Router)
+app.get('*', (req, res) => {
+  res.sendFile(path.join(clientDistPath, 'index.html'));
+});
+
 // Centralized Error Handling Middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Internal Server Error', message: process.env.NODE_ENV === 'development' ? err.message : undefined });
 });
 
-// Frontend and Backend are now decoupled.
-// The backend will only serve /api routes.
 export default app;
