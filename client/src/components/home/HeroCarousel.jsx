@@ -109,23 +109,18 @@ export default function HeroCarousel() {
                     {slide.description}
                   </p>
                   <div className="flex items-center gap-3 pt-4">
-                    <Button
-                      variant="primary"
-                      size="lg"
-                      className="bg-white text-gray-900 hover:bg-gray-100 border-0"
+                    <button
                       onClick={() => window.location.href = '/shop'}
+                      className="h-12 px-6 text-base font-bold bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-all duration-200 inline-flex items-center gap-2"
                     >
                       {slide.cta} <ArrowRight size={18} />
-                    </Button>
-                    <Button
-                      variant="outline"
-                      size="lg"
+                    </button>
+                    <button
                       onClick={() => window.location.href = '/shop'}
-                      style={{ borderColor: 'rgba(255,255,255,0.3)', color: 'white' }}
-                      className="hover:bg-white/10 hover:border-white"
+                      className="h-12 px-6 text-base font-medium border border-white/50 text-white rounded-md hover:bg-white/10 hover:border-white transition-all duration-200"
                     >
                       Tìm hiểu thêm
-                    </Button>
+                    </button>
                   </div>
                 </div>
 
