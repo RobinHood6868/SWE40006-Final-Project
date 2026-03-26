@@ -1,7 +1,7 @@
 import { fileURLToPath } from 'url';
 import { readFileSync } from 'fs';
 import path from 'path';
-import { connectDB, initDB } from './db.js';
+import { connectDB, initDB, getPool } from './db.js';
 import { seedMoreProducts } from './seed.js';
 import { fixAllProductImages } from './fix-all-images.js';
 import { refreshProducts } from './refresh-products.js';
