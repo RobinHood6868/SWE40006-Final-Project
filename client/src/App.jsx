@@ -8,12 +8,9 @@ import OrderTracking from './pages/OrderTracking';
 import CartDrawer from './components/cart/CartDrawer';
 import ProductModal from './components/product/ProductModal';
 import WishlistDrawer from './components/product/WishlistDrawer';
-import ProductComparison from './components/product/ProductComparison';
 import Toast from './components/common/Toast';
 import { useCartStore } from './stores/cartStore';
 import { useRecentlyViewedStore } from './stores/recentlyViewedStore';
-import { useComparisonStore } from './stores/comparisonStore';
-import { Scale, X } from 'lucide-react';
 
 const API = '/api';
 
@@ -26,13 +23,11 @@ export default function App() {
   // UI State
   const [showCart, setShowCart] = useState(false);
   const [showWishlist, setShowWishlist] = useState(false);
-  const [showComparison, setShowComparison] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [toast, setToast] = useState(null);
 
   const { addItem: addToCart } = useCartStore();
   const recentlyViewed = useRecentlyViewedStore();
-  const comparison = useComparisonStore();
 
   // Load initial data
   useEffect(() => {
@@ -129,56 +124,6 @@ export default function App() {
         onClose={() => setSelectedProduct(null)}
         onAddToCart={handleAddToCart}
       />
-
-      {/* Product Comparison Modal */}
-      <ProductComparison
-        products={comparison.items}
-        isOpen={showComparison}
-        onClose={() => setShowComparison(false)}
-        onRemove={comparison.removeProduct}
-      />
-
-      {/* Comparison Floating Bar */}
-      {comparison.items.length > 0 && (
-        <div className="fixed bottom-20 left-1/2 -translate-x-1/2 z-40 animate-slideUp">
-          <div className="bg-black text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-4">
-            <div className="flex items-center gap-2">
-              <Scale size={18} className="text-blue-400" />
-              <span className="text-sm font-medium">
-                {comparison.items.length} sản phẩm so sánh
-              </span>
-            </div>
-            <div className="flex -space-x-2">
-              {comparison.items.map((p) => (
-                <img
-                  key={p.id}
-                  src={p.image_url}
-                  alt={p.name}
-                  className="w-8 h-8 rounded-full border-2 border-black object-cover"
-                />
-              ))}
-            </div>
-            <button
-              onClick={() => setShowComparison(true)}
-              className="px-4 py-1.5 bg-white text-black text-sm font-bold rounded-full hover:bg-gray-100 transition-colors"
-            >
-              Xem
-            </button>
-            <button
-              onClick={() => setShowComparison(true)}
-              className="px-4 py-1.5 bg-blue-600 text-white text-sm font-bold rounded-full hover:bg-blue-700 transition-colors"
-            >
-              So sánh
-            </button>
-            <button
-              onClick={comparison.clearComparison}
-              className="p-1.5 hover:bg-white/10 rounded-full transition-colors"
-            >
-              <X size={16} />
-            </button>
-          </div>
-        </div>
-      )}
 
       {/* Toast Notifications */}
       {toast && (

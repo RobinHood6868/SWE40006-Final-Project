@@ -1,19 +1,15 @@
 import React from 'react';
-import { Heart, ShoppingCart, Eye, Scale } from 'lucide-react';
+import { Heart, ShoppingCart } from 'lucide-react';
 import { clsx } from 'clsx';
 import { formatCurrency, calculateDiscount } from '../../utils/formatters';
 import { Rating } from '../common/Rating';
 import ProductImage from './ProductImage';
 import { useWishlistStore } from '../../stores/wishlistStore';
-import { useComparisonStore } from '../../stores/comparisonStore';
 
 export default function ProductCard({ product, variant = 'default', onViewProduct, onAddToCart }) {
   const wishlist = useWishlistStore();
-  const comparison = useComparisonStore();
   const isInWishlist = wishlist.isInWishlist(product.id);
-  const isInComparison = comparison.isInComparison(product.id);
-  const canAddToComparison = comparison.canAdd();
-  
+
   const discount = calculateDiscount(product.original_price, product.price);
   const isFlash = variant === 'flash';
   const stockRemaining = product.stock || Math.floor(Math.random() * 50);
@@ -22,11 +18,6 @@ export default function ProductCard({ product, variant = 'default', onViewProduc
   const handleWishlistToggle = (e) => {
     e.stopPropagation();
     wishlist.toggleItem(product);
-  };
-
-  const handleComparisonToggle = (e) => {
-    e.stopPropagation();
-    comparison.toggleProduct(product);
   };
 
   const handleAddToCart = (e) => {
@@ -84,26 +75,13 @@ export default function ProductCard({ product, variant = 'default', onViewProduc
               onClick={handleWishlistToggle}
               className={clsx(
                 "flex-1 h-9 rounded-lg flex items-center justify-center gap-2 text-sm font-medium transition-colors",
-                isInWishlist
-                  ? "bg-red-500 text-white"
+                isInWishlist 
+                  ? "bg-red-500 text-white" 
                   : "bg-white text-gray-700 hover:bg-red-50 hover:text-red-500"
               )}
             >
               <Heart size={16} className={isInWishlist ? "fill-white" : ""} />
               {isInWishlist ? 'Đã thích' : 'Yêu thích'}
-            </button>
-            <button
-              onClick={handleComparisonToggle}
-              className={clsx(
-                "w-9 h-9 rounded-lg flex items-center justify-center text-sm font-medium transition-colors",
-                isInComparison
-                  ? "bg-blue-600 text-white"
-                  : "bg-white text-gray-700 hover:bg-blue-50 hover:text-blue-600"
-              )}
-              title={isInComparison ? 'Bỏ so sánh' : 'So sánh'}
-              disabled={!canAddToComparison && !isInComparison}
-            >
-              <Scale size={16} />
             </button>
             <button
               onClick={handleAddToCart}

@@ -17,7 +17,7 @@ export default function HomePage({ products, categories, onViewProduct, onAddToC
       <HeroCarousel />
 
       {/* Flash Sales */}
-      <FlashSales />
+      <FlashSales onViewProduct={onViewProduct} onAddToCart={onAddToCart} />
 
       {/* Categories */}
       <CategoryGrid />

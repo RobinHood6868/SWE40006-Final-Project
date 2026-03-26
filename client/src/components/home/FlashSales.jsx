@@ -56,7 +56,7 @@ const flashSaleProducts = [
   }
 ];
 
-export default function FlashSales() {
+export default function FlashSales({ onViewProduct, onAddToCart }) {
   const endTime = getFlashSaleEndTime();
   const { hours, minutes, seconds, isExpired } = useCountdown(endTime);
 
@@ -113,10 +113,12 @@ export default function FlashSales() {
         {/* Products Grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {flashSaleProducts.map((product) => (
-            <ProductCard 
-              key={product.id} 
-              product={product} 
+            <ProductCard
+              key={product.id}
+              product={product}
               variant="flash"
+              onViewProduct={onViewProduct}
+              onAddToCart={onAddToCart}
             />
           ))}
         </div>
