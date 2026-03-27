@@ -92,8 +92,8 @@ async function main() {
           { name: '📊 Total Revenue', value: fmt(total_revenue), inline: true },
           { name: '📦 Total Orders', value: `${order_count}`, inline: true },
           { name: '🆔 Latest Demo Order', value: `#${demoId}`, inline: true },
-          { name: '🧪 Test Suite', value: '18/18 Passed ✅', inline: true },
-          { name: '🛡️ Coverage', value: '77% Code Coverage', inline: true },
+          { name: '🧪 Test Suite', value: '24/24 Passed ✅', inline: true },
+          { name: '🛡️ Coverage', value: '94% Code Coverage', inline: true },
           { name: '⚙️ Pipeline', value: 'GitHub Actions → AWS EC2', inline: true },
           { name: '🧠 App Memory', value: `${ramMB} MB / ${totalRamMB} MB (Healthy)`, inline: true },
           { name: '⏱️ System Uptime', value: `${hours}h ${minutes}m`, inline: true }

@@ -26,3 +26,6 @@ build/
 
 # Legacy
 client_old/
+
+# Jest coverage reports
+coverage/
