@@ -27,11 +27,7 @@ SWE40006-Final-Project/
 │   ├── app.js              # Express app (API routes + static serving)
 │   ├── index.js            # Server entry point (env loading, DB connect)
 │   ├── routes.js           # API route handlers
-│   ├── db.js               # Neon Postgres connection & schema init
-│   ├── seed.js             # Database seeding utilities
-│   ├── fix-images.js       # Image path fix utility
-│   ├── fix-all-images.js   # Batch image fix utility
-│   └── refresh-products.js # Product refresh utility
+│   └── db.js               # Neon Postgres connection & schema init
 ├── __tests__/
 │   └── api.test.js         # Jest + Supertest API tests (18 tests)
 ├── .github/workflows/
