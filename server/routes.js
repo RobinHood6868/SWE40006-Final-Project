@@ -27,12 +27,31 @@ router.get('/health', (req, res) => {
 router.get('/products', async (req, res) => {
   try {
     const pool = getPool();
-    const { category, search } = req.query;
+    const { category, search, min_price, max_price, rating, in_stock, sort } = req.query;
     let query = `SELECT p.*, c.name as category_name FROM products p LEFT JOIN categories c ON p.category_id = c.id WHERE 1=1`;
     const params = [];
+    
     if (category) { params.push(category); query += ` AND c.slug = $${params.length}`; }
     if (search) { params.push(`%${search}%`); query += ` AND p.name ILIKE $${params.length}`; }
-    query += ` ORDER BY p.is_featured DESC, p.created_at DESC`;
+    if (min_price) { params.push(Number(min_price)); query += ` AND p.price >= $${params.length}`; }
+    if (max_price) { params.push(Number(max_price)); query += ` AND p.price <= $${params.length}`; }
+    if (rating) { params.push(Number(rating)); query += ` AND p.rating >= $${params.length}`; }
+    if (in_stock === 'true') { query += ` AND p.stock > 0`; }
+    
+    // Sorting
+    let orderBy = 'p.is_featured DESC, p.created_at DESC';
+    if (sort) {
+      switch (sort) {
+        case 'price-asc': orderBy = 'p.price ASC, p.id ASC'; break;
+        case 'price-desc': orderBy = 'p.price DESC, p.id ASC'; break;
+        case 'rating': orderBy = 'p.rating DESC, p.review_count DESC, p.id ASC'; break;
+        case 'newest': orderBy = 'p.created_at DESC, p.id ASC'; break;
+        case 'best-selling': orderBy = 'p.review_count DESC, p.rating DESC, p.id ASC'; break;
+        default: orderBy = 'p.is_featured DESC, p.created_at DESC';
+      }
+    }
+    query += ` ORDER BY ${orderBy}`;
+    
     const result = await pool.query(query, params);
     res.json(result.rows);
   } catch (err) { res.status(500).json({ error: err.message }); }
