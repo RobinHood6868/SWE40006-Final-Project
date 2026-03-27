@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
-import { Search, ShoppingCart, Package, Bell, User, ChevronDown } from 'lucide-react';
-import { useCartStore } from '../../stores/cartStore';
-import MegaMenu from './MegaMenu';
+import React, { useState } from "react";
+import {
+  Search,
+  ShoppingCart,
+  Package,
+  Bell,
+  User,
+  ChevronDown,
+} from "lucide-react";
+import { useCartStore } from "../../stores/cartStore";
+import MegaMenu from "./MegaMenu";
 
-export default function Header({ onCartClick, onNavigate, currentView, onSearch }) {
-  const [searchQuery, setSearchQuery] = useState('');
+export default function Header({
+  onCartClick,
+  onNavigate,
+  currentView,
+  onSearch,
+}) {
+  const [searchQuery, setSearchQuery] = useState("");
   const [showMegaMenu, setShowMegaMenu] = useState(false);
   const itemCount = useCartStore((state) => state.getItemCount());
 
@@ -12,28 +24,40 @@ export default function Header({ onCartClick, onNavigate, currentView, onSearch 
     e.preventDefault();
     if (searchQuery.trim()) {
       onSearch?.(searchQuery);
-      onNavigate('shop');
-      setSearchQuery('');
+      onNavigate("shop");
+      setSearchQuery("");
     }
   };
 
   // Clear header search when navigating away
   React.useEffect(() => {
-    if (currentView !== 'shop') {
-      setSearchQuery('');
+    if (currentView !== "shop") {
+      setSearchQuery("");
     }
   }, [currentView]);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100">
+      {/* --- START LIVE DEMO CODE (Uncomment the div below for presentation) --- */}
+      {/* <div className="bg-red-600 text-white text-center py-2 text-sm font-bold tracking-widest uppercase animate-pulse">
+        🚀 FLASH SALE: GIẢM GIÁ 50% TẤT CẢ SẢN PHẨM — DEVOPS PIPELINE!
+      </div> */}
+      {/* --- END LIVE DEMO CODE --- */}
+
       {/* Top Bar */}
       <div className="bg-gray-50 border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-8 text-xs">
             <div className="flex items-center gap-4 text-gray-600">
-              <span className="hover:text-blue-600 cursor-pointer">Về chúng tôi</span>
-              <span className="hover:text-blue-600 cursor-pointer">Liên hệ</span>
-              <span className="hover:text-blue-600 cursor-pointer">Tuyển dụng</span>
+              <span className="hover:text-blue-600 cursor-pointer">
+                Về chúng tôi
+              </span>
+              <span className="hover:text-blue-600 cursor-pointer">
+                Liên hệ
+              </span>
+              <span className="hover:text-blue-600 cursor-pointer">
+                Tuyển dụng
+              </span>
             </div>
             <div className="flex items-center gap-4 text-gray-600">
               <span className="hover:text-blue-600 cursor-pointer flex items-center gap-1">
@@ -51,9 +75,9 @@ export default function Header({ onCartClick, onNavigate, currentView, onSearch 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-6">
           {/* Logo */}
-          <div 
+          <div
             className="flex items-center gap-2 cursor-pointer flex-shrink-0"
-            onClick={() => onNavigate('home')}
+            onClick={() => onNavigate("home")}
           >
             <div className="text-xl font-bold font-mono tracking-tight">
               Volt<span className="text-blue-600">a</span>
@@ -73,7 +97,10 @@ export default function Header({ onCartClick, onNavigate, currentView, onSearch 
           </nav>
 
           {/* Search Bar */}
-          <form onSubmit={handleSubmitSearch} className="flex-1 max-w-2xl hidden sm:block">
+          <form
+            onSubmit={handleSubmitSearch}
+            className="flex-1 max-w-2xl hidden sm:block"
+          >
             <div className="relative">
               <input
                 type="text"
@@ -94,11 +121,11 @@ export default function Header({ onCartClick, onNavigate, currentView, onSearch 
           {/* Right Actions */}
           <div className="flex items-center gap-2">
             <button
-              onClick={() => onNavigate('track')}
+              onClick={() => onNavigate("track")}
               className={`hidden sm:flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                currentView === 'track'
-                  ? 'bg-blue-50 text-blue-600'
-                  : 'text-gray-700 hover:bg-gray-50'
+                currentView === "track"
+                  ? "bg-blue-50 text-blue-600"
+                  : "text-gray-700 hover:bg-gray-50"
               }`}
             >
               <Package size={18} />
@@ -123,8 +150,8 @@ export default function Header({ onCartClick, onNavigate, currentView, onSearch 
 
       {/* Mega Menu */}
       {showMegaMenu && (
-        <MegaMenu 
-          onClose={() => setShowMegaMenu(false)} 
+        <MegaMenu
+          onClose={() => setShowMegaMenu(false)}
           onNavigate={onNavigate}
         />
       )}
