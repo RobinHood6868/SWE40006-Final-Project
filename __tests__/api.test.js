@@ -236,4 +236,27 @@ describe('Volta Tech Store API', () => {
       expect(res.status).toBe(500);
     });
   });
+  // ─── Crash Test ────────────────────────────────────────────────────────
+  
+  describe('GET /api/crash-test', () => {
+    it('should log a fatal error and exit the process', async () => {
+      // Mock process.exit to throw so that the Express error handler 
+      // catches it and sends a response, preventing the test from hanging.
+      const exitMock = jest.spyOn(process, 'exit').mockImplementation((code) => {
+        throw new Error(`Process exited with code ${code}`);
+      });
+      const consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => {});
+
+      const res = await request(app).get('/api/crash-test');
+
+      expect(consoleErrorMock).toHaveBeenCalled();
+      expect(exitMock).toHaveBeenCalledWith(1);
+      
+      // Express default error handler will return 500
+      expect(res.status).toBe(500);
+
+      exitMock.mockRestore();
+      consoleErrorMock.mockRestore();
+    });
+  });
 });
