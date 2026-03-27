@@ -2,9 +2,6 @@ import { fileURLToPath } from 'url';
 import { readFileSync } from 'fs';
 import path from 'path';
 import { connectDB, initDB, getPool } from './db.js';
-import { seedMoreProducts } from './seed.js';
-import { fixAllProductImages } from './fix-all-images.js';
-import { refreshProducts } from './refresh-products.js';
 import app from './app.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -33,17 +30,6 @@ app.listen(PORT, async () => {
       await connectDB(process.env.DATABASE_URL);
       await initDB();
       console.log('✅ Neon DB kết nối tự động từ .env');
-      
-      // Refresh products - clear old, keep categories
-      await refreshProducts();
-      
-      // Seed new products
-      await seedMoreProducts();
-      console.log('✅ Đã thêm sản phẩm mới vào database');
-      
-      // Fix ALL product images comprehensively
-      await fixAllProductImages();
-      console.log('✅ Đã cập nhật tất cả ảnh sản phẩm');
       
       // Show product count
       const pool = getPool();
