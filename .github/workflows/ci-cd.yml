@@ -47,3 +47,5 @@ jobs:
             cd client && npm ci && npm run build && cd ..
             pm2 restart ecosystem.config.cjs --env production || pm2 start ecosystem.config.cjs --env production
             pm2 save
+            export DISCORD_WEBHOOK_URL="${{ secrets.DISCORD_WEBHOOK_URL }}"
+            node scripts/discord-report.js

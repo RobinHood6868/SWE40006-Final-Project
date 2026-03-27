@@ -1,3 +1,5 @@
+[![CI/CD Pipeline](https://github.com/RobinHood6868/SWE40006-Final-Project/actions/workflows/ci-cd.yml/badge.svg)](https://github.com/RobinHood6868/SWE40006-Final-Project/actions/workflows/ci-cd.yml)
+
 # Volta Tech Store
 
 A full-stack e-commerce application built with **React + Vite** (frontend) and **Express + Neon Postgres** (backend).

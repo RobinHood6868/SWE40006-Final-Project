@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import rateLimit from 'express-rate-limit';
 import routes from './routes.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -11,9 +12,18 @@ app.use(cors());
 app.use(express.json());
 
 // Basic Security Headers
-app.disable('x-powered-by'); // basic obfuscation
+app.disable('x-powered-by');
 
-app.use('/api', routes);
+// Rate limiting: 100 requests per 15-minute window per IP
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later.' }
+});
+
+app.use('/api', apiLimiter, routes);
 
 // Serve the React frontend build
 const clientDistPath = path.join(__dirname, '..', 'client', 'dist');
