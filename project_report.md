@@ -291,25 +291,35 @@ Successful order creation returns:
 
 ### 7.3 Test Suite Specifications
 
-15 automated tests covering all endpoints:
+25 automated tests covering all endpoints:
 
 | # | Test | Type |
 |---|---|---|
 | 1 | API returns JSON content-type | Format validation |
 | 2 | Server hides x-powered-by header | Security validation |
-| 3 | List all products with correct structure | Happy path + schema |
-| 4 | Filter products by category slug | Query filter |
-| 5 | Search products by name (case-insensitive) | Search functionality |
-| 6 | Get product by valid ID | Resource retrieval |
-| 7 | Get product by invalid ID → 404 | Error handling |
-| 8 | List categories with product counts | Aggregation query |
-| 9 | Create order successfully | Transaction flow |
-| 10 | Create order with empty cart → 400 | Input validation |
-| 11 | Create order without guest name → 400 | Input validation |
-| 12 | Create order without address → 400 | Input validation |
-| 13 | Lookup order with valid ID + email | Happy path |
-| 14 | Lookup order without email → 400 | Input validation |
-| 15 | Lookup order without ID → 400 | Input validation |
+| 3 | `/api/health` returns health metrics | Monitoring |
+| 4 | `/api/db/status` returns db connection status | Monitoring |
+| 5 | List all products with correct structure | Happy path |
+| 6 | Filter products by category slug | Query filter |
+| 7 | Search products by name (case-insensitive) | Search functionality |
+| 8 | Apply multiple filters (min_price, max_price, rating, in_stock) | Complex query |
+| 9 | Handle all sorting options | Feature verification |
+| 10 | Products list handles DB errors → 500 | Error handling |
+| 11 | Get product by valid ID | Resource retrieval |
+| 12 | Get product by invalid ID → 404 | Error handling |
+| 13 | Get product by ID handles DB errors → 500 | Error handling |
+| 14 | List categories with product counts | Aggregation query |
+| 15 | Create order successfully | Transaction flow |
+| 16 | Create order with empty cart → 400 | Input validation |
+| 17 | Create order without guest name → 400 | Input validation |
+| 18 | Create order without address → 400 | Input validation |
+| 19 | Create order handles DB errors with rollback → 500 | Transaction resiliency |
+| 20 | Lookup order with valid ID + email | Happy path |
+| 21 | Lookup order without email → 400 | Input validation |
+| 22 | Lookup order without ID → 400 | Input validation |
+| 23 | Lookup order for non-existent order → 404 | Error handling |
+| 24 | Lookup order handles DB errors → 500 | Error handling |
+| 25 | Crash test endpoint simulates fatal error (`/api/crash-test`) | Process recovery demonstration |
 
 ---
 
@@ -471,7 +481,7 @@ All four rubric levels have been successfully achieved:
 | Metric | Target | Actual |
 |---|---|---|
 | Pipeline time (push → live) | < 5 min | ~2 min |
-| Automated test cases | ≥ 10 | 15 |
+| Automated test cases | ≥ 10 | 25 |
 | Manual deployment steps | 0 | 0 |
 | Tools cost | $0 | $0 |
 | Crash recovery time | < 5 sec | ~1 sec (PM2 auto-restart) |
