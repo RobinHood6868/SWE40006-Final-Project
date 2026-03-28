@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: "volta-server",
+      name: "volta-store",
       script: "./server/index.js",
       env: {
         NODE_ENV: "development",
