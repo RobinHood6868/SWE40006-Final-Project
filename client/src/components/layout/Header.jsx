@@ -39,9 +39,9 @@ export default function Header({
   return (
     <header className="fixed top-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-b border-gray-100">
       {/* --- START LIVE DEMO CODE (Uncomment the div below for presentation) --- */}
-      {/* <div className="bg-red-600 text-white text-center py-2 text-sm font-bold tracking-widest uppercase animate-pulse">
+      <div className="bg-red-600 text-white text-center py-2 text-sm font-bold tracking-widest uppercase animate-pulse">
         🚀 FLASH SALE: GIẢM GIÁ 50% TẤT CẢ SẢN PHẨM — DEVOPS PIPELINE!
-      </div> */}
+      </div>
       {/* --- END LIVE DEMO CODE --- */}
 
       {/* Top Bar */}
