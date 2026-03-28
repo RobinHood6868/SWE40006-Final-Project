@@ -14,11 +14,9 @@ const disc = (o, c) => o && o > c ? Math.round((1 - c / o) * 100) : null;
 const stars = r => '★'.repeat(Math.round(r)) + '☆'.repeat(5 - Math.round(r));
 
 // --- Components ---
-
 function ProductImage({ src, alt, className }) {
   const [err, setErr] = useState(false);
   const placeholder = 'https://images.unsplash.com/photo-1560393464-5c69a71c57a3?w=400&q=80'; // Premium dark tech placeholder
-  
   return (
     <img 
       src={err ? placeholder : src} 
@@ -73,7 +71,7 @@ function ProductModal({ product, onClose, onAddToCart }) {
           </div>
 
           <div className="text-gray-600 text-sm leading-relaxed">
-            {product.description || "Chưa có mô tả chi tiết cho sản phẩm này."}
+            <div dangerouslySetInnerHTML={{ __html: product.description || "Chưa có mô tả chi tiết cho sản phẩm này." }} />
           </div>
 
           <div className="mt-auto">
