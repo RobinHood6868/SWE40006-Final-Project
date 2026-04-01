@@ -29,3 +29,6 @@ client_old/
 
 # Jest coverage reports
 coverage/
+
+intel.md 
+.gitignore
